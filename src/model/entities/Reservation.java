@@ -27,9 +27,18 @@ public class Reservation {
 		return t2;
 	}
 
-	public void updateDates(LocalDate checkin, LocalDate checkout) {
+	public String updateDates(LocalDate checkin, LocalDate checkout) {
+		LocalDate dateNow = LocalDate.now();
+		if(checkin.isBefore(dateNow) || checkout.isBefore(dateNow)) {
+			return "Reservation dates for update must be future dates";
+		}
+		if (checkout.isBefore(dateNow)) {
+			return "Check-out date must be after check-in date";
+		}
+		
 		this.checkin = checkin;
 		this.checkout = checkout;
+		return null;
 	}
 
 	public Integer getRoomNumber() {
