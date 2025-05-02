@@ -1,9 +1,14 @@
 package application;
 
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import entities.Product;
 
 public class Program {
 	public static void main(String[] args) {
@@ -28,22 +33,22 @@ public class Program {
 		 * Stream<Integer> st3 = Stream.iterate(0, x -> x + 2);
 		 * System.out.println(Arrays.toString(st3.limit(10).toArray()));
 		 */
-		
+
 		// Lista para Pipeline
-		
-		List<Integer> list = Arrays.asList(3, 4, 5, 10, 7);
-		Stream<Integer> st1 = list.stream().map(x -> x * 10);
-		System.out.println(Arrays.toString(st1.toArray()));
-		
-		int sum = list.stream().reduce(0, (x,y) -> x + y);
-		System.out.println("Sum = " + sum);
-		
-		List<Integer> newList = list.stream()
-				.filter(x -> x % 2 == 0)
-				.map(x -> x* 10)
-				.collect(Collectors.toList());
-		
-		System.out.println(newList);
+
+		/*
+		 * List<Integer> list = Arrays.asList(3, 4, 5, 10, 7); Stream<Integer> st1 =
+		 * list.stream().map(x -> x * 10);
+		 * System.out.println(Arrays.toString(st1.toArray()));
+		 * 
+		 * int sum = list.stream().reduce(0, (x,y) -> x + y);
+		 * System.out.println("Sum = " + sum);
+		 * 
+		 * List<Integer> newList = list.stream() .filter(x -> x % 2 == 0) .map(x -> x*
+		 * 10) .collect(Collectors.toList());
+		 * 
+		 * System.out.println(newList);
+		 */
 
 		// Predicate
 
@@ -72,7 +77,43 @@ public class Program {
 		 * names.forEach(System.out::println);
 		 */
 
-		// Stream
+		// Exercício resolvido 1
+
+		Scanner sc = new Scanner(System.in);
+
+		System.out.println("Enter full file path: ");
+		String path = sc.next();
+
+		try(BufferedReader br = new BufferedReader(new FileReader(path))) {
+			String line = br.readLine();
+			
+			List<Product> listProd = new ArrayList<>();
+			
+			while(line != null) {
+				String[] fields = line.split(",");
+				listProd.add(new Product(fields[0], Double.parseDouble(fields[1])));
+				line = br.readLine();
+			}
+			
+			double mediaProdutos = listProd.stream()
+					.map(p -> p.getPrice())
+					.reduce(0.0, (x,y) -> x + y / listProd.size());
+			
+			System.out.println("Average price: " + String.format("%.2f", mediaProdutos));
+			
+			List<String> prodPrecoAbaixoDaMedia = listProd.stream()
+					.filter(p -> p.getPrice() < mediaProdutos)
+					.map(p -> p.getName())
+					.sorted((s1, s2) -> s2.toUpperCase().compareTo(s1.toUpperCase()))
+					.collect(Collectors.toList());
+			
+			prodPrecoAbaixoDaMedia.forEach(System.out::println);
+			
+		} catch (IOException e) {
+			System.out.println("Erro: " + e);
+		}
+
+		sc.close();
 
 	}
 }
