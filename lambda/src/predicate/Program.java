@@ -24,20 +24,20 @@ public class Program {
 		 */
 
 		// Consumer
-		
-		  Consumer<Product> cons = p -> p.setPrice(p.getPrice()* 1.1);
-		  
-		  list.forEach(cons);
-		  
-		  list.forEach(System.out::println);
-		 
+
+		/*
+		 * Consumer<Product> cons = p -> p.setPrice(p.getPrice()* 1.1);
+		 * 
+		 * list.forEach(cons);
+		 * 
+		 * list.forEach(System.out::println);
+		 */
 
 		// Function
 
-		// List<String> names = list.stream().map(p ->
-		// p.getName().toUpperCase()).collect(Collectors.toList());
+		List<String> names = list.stream().map(p -> p.getName().toUpperCase()).collect(Collectors.toList());
 
-		// names.forEach(System.out::println);
+		names.forEach(System.out::println);
 
 	}
 }
