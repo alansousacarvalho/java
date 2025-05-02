@@ -2,8 +2,7 @@ package predicate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
 import entities.Product;
 
@@ -17,22 +16,21 @@ public class Program {
 		list.add(new Product("HD Case", 80.90));
 
 		// Predicate
-		
-		list.removeIf(Product::staticProductPredicate);
 
-		for (Product p : list) {
-			System.out.println(p);
-		}
+		/**
+		 * list.removeIf(p -> p.getPrice() >= 100.0);
+		 * 
+		 * for (Product p : list) { System.out.println(p); }
+		 */
 
 		// Consumer
-
-		/*
-		 * Consumer<Product> cons = p -> p.setPrice(p.getPrice()* 1.1);
-		 * 
-		 * list.forEach(cons);
-		 * 
-		 * list.forEach(System.out::println);
-		 */
+		
+		  Consumer<Product> cons = p -> p.setPrice(p.getPrice()* 1.1);
+		  
+		  list.forEach(cons);
+		  
+		  list.forEach(System.out::println);
+		 
 
 		// Function
 
