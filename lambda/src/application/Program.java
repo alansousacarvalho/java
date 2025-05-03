@@ -5,10 +5,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import entities.Product;
+import entities.Employee;
 
 public class Program {
 	public static void main(String[] args) {
@@ -79,40 +80,79 @@ public class Program {
 
 		// Exercício resolvido 1
 
+		/*
+		 * Scanner sc = new Scanner(System.in);
+		 * 
+		 * System.out.println("Enter full file path: "); String path = sc.next();
+		 * 
+		 * try(BufferedReader br = new BufferedReader(new FileReader(path))) { String
+		 * line = br.readLine();
+		 * 
+		 * List<Product> listProd = new ArrayList<>();
+		 * 
+		 * while(line != null) { String[] fields = line.split(","); listProd.add(new
+		 * Product(fields[0], Double.parseDouble(fields[1]))); line = br.readLine(); }
+		 * 
+		 * double mediaProdutos = listProd.stream() .map(p -> p.getPrice()) .reduce(0.0,
+		 * (x,y) -> x + y / listProd.size());
+		 * 
+		 * System.out.println("Average price: " + String.format("%.2f", mediaProdutos));
+		 * 
+		 * List<String> prodPrecoAbaixoDaMedia = listProd.stream() .filter(p ->
+		 * p.getPrice() < mediaProdutos) .map(p -> p.getName()) .sorted((s1, s2) ->
+		 * s2.toUpperCase().compareTo(s1.toUpperCase())) .collect(Collectors.toList());
+		 * 
+		 * prodPrecoAbaixoDaMedia.forEach(System.out::println);
+		 * 
+		 * } catch (IOException e) { System.out.println("Erro: " + e); }
+		 * 
+		 * sc.close();
+		 */
+		
+		// Exercício de fixação
+		
+		Locale.setDefault(Locale.US);
 		Scanner sc = new Scanner(System.in);
-
-		System.out.println("Enter full file path: ");
+		
+		System.out.print("Enter full file path: ");
 		String path = sc.next();
-
+		
 		try(BufferedReader br = new BufferedReader(new FileReader(path))) {
 			String line = br.readLine();
 			
-			List<Product> listProd = new ArrayList<>();
+			List<Employee> list = new ArrayList<>();
 			
 			while(line != null) {
 				String[] fields = line.split(",");
-				listProd.add(new Product(fields[0], Double.parseDouble(fields[1])));
+				list.add(new Employee(fields[0], fields[1], Double.parseDouble(fields[2])));
 				line = br.readLine();
 			}
 			
-			double mediaProdutos = listProd.stream()
-					.map(p -> p.getPrice())
-					.reduce(0.0, (x,y) -> x + y / listProd.size());
+			System.out.print("Enter salary: ");
+			Double salary = sc.nextDouble();
 			
-			System.out.println("Average price: " + String.format("%.2f", mediaProdutos));
+			System.out.println("Email of people whose salary is more than " + String.format("%.2f", salary));
 			
-			List<String> prodPrecoAbaixoDaMedia = listProd.stream()
-					.filter(p -> p.getPrice() < mediaProdutos)
-					.map(p -> p.getName())
-					.sorted((s1, s2) -> s2.toUpperCase().compareTo(s1.toUpperCase()))
+			List<String> emails = list.stream()
+					.filter(p -> p.getSalary() > salary)
+					.map(p -> p.getEmail())
+					.sorted()
 					.collect(Collectors.toList());
 			
-			prodPrecoAbaixoDaMedia.forEach(System.out::println);
+			emails.forEach(System.out::println);
+			
+			Double somaSalarios = list.stream()
+					.filter(p -> p.getName().charAt(0) == 'M')
+					.map(p -> p.getSalary())
+					.reduce(0.0, (x,y) -> x + y);
+			
+			System.out.print("Sum of salary of people whose name starts with 'M': " + String.format("%.2f", somaSalarios));
+			
 			
 		} catch (IOException e) {
 			System.out.println("Erro: " + e);
 		}
-
+		
 		sc.close();
 
 	}
