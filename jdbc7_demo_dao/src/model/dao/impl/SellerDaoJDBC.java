@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,13 +27,57 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public void insert(Seller obj) {
-		// TODO Auto-generated method stub
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = con.prepareStatement("INSERT INTO seller " + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+					+ "VALUES " + "(?, ?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
+			
+			ps.setString(1, obj.getName());
+			ps.setString(2, obj.getEmail());
+			ps.setTimestamp(3, Timestamp.valueOf(obj.getBirthDate()));
+			ps.setDouble(4, obj.getBaseSalary());
+			ps.setInt(5, obj.getDepartment().getId());
+			
+			int rowsAffected = ps.executeUpdate();
+			
+			if(rowsAffected > 0) {
+				ResultSet rs1 = ps.getGeneratedKeys();
+				if(rs1.next()) {
+					int id = rs1.getInt(1);
+					obj.setId(id);
+				}
+				DB.closeResultSet(rs1);
+			} else {
+				throw new DbException("Unexpected error! No rows affected!");
+			}
+		} catch (Exception e) {
+			throw new DbException(e.getMessage());
+		} 
+		finally {
+			DB.closeStatement(ps);
+			DB.closeStatement(ps);
+		}
 
 	}
 
 	@Override
 	public void update(Seller obj) {
-		// TODO Auto-generated method stub
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = con.prepareStatement("INSERT INTO seller " + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+					+ "VALUES " + "(?, ?, ?, ?, ?)");
+
+			ps.setString(1, obj.getName());
+			ps.setString(2, obj.getEmail());
+			// ps.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 
 	}
 
@@ -101,7 +147,7 @@ public class SellerDaoJDBC implements SellerDao {
 			Map<Integer, Department> mapDep = new HashMap<>();
 			while (rs.next()) {
 				Department dep = mapDep.get(rs.getInt("DepartmentId"));
-				if(dep == null) {					
+				if (dep == null) {
 					dep = instantiateDeparment(rs);
 				}
 				seller = instantiateSeller(rs, dep);
@@ -133,7 +179,7 @@ public class SellerDaoJDBC implements SellerDao {
 			Map<Integer, Department> mapDep = new HashMap<>();
 			while (rs.next()) {
 				Department dep = mapDep.get(rs.getInt("DepartmentId"));
-				if(dep == null) {					
+				if (dep == null) {
 					dep = instantiateDeparment(rs);
 				}
 				seller = instantiateSeller(rs, dep);
