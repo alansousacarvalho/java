@@ -32,20 +32,19 @@ public class SellerDaoJDBC implements SellerDao {
 
 		try {
 			ps = con.prepareStatement("INSERT INTO seller " + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
-					+ "VALUES " + "(?, ?, ?, ?, ?)",
-					Statement.RETURN_GENERATED_KEYS);
-			
+					+ "VALUES " + "(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+
 			ps.setString(1, obj.getName());
 			ps.setString(2, obj.getEmail());
 			ps.setTimestamp(3, Timestamp.valueOf(obj.getBirthDate()));
 			ps.setDouble(4, obj.getBaseSalary());
 			ps.setInt(5, obj.getDepartment().getId());
-			
+
 			int rowsAffected = ps.executeUpdate();
-			
-			if(rowsAffected > 0) {
+
+			if (rowsAffected > 0) {
 				ResultSet rs1 = ps.getGeneratedKeys();
-				if(rs1.next()) {
+				if (rs1.next()) {
 					int id = rs1.getInt(1);
 					obj.setId(id);
 				}
@@ -55,8 +54,7 @@ public class SellerDaoJDBC implements SellerDao {
 			}
 		} catch (Exception e) {
 			throw new DbException(e.getMessage());
-		} 
-		finally {
+		} finally {
 			DB.closeStatement(ps);
 			DB.closeStatement(ps);
 		}
@@ -69,22 +67,41 @@ public class SellerDaoJDBC implements SellerDao {
 		ResultSet rs = null;
 
 		try {
-			ps = con.prepareStatement("INSERT INTO seller " + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
-					+ "VALUES " + "(?, ?, ?, ?, ?)");
+			ps = con.prepareStatement("UPDATE seller "
+					+ "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? " + "WHERE Id = ?");
 
 			ps.setString(1, obj.getName());
 			ps.setString(2, obj.getEmail());
-			// ps.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+			ps.setTimestamp(3, Timestamp.valueOf(obj.getBirthDate()));
+			ps.setDouble(4, obj.getBaseSalary());
+			ps.setInt(5, obj.getDepartment().getId());
+			ps.setInt(6, obj.getId());
 
+			ps.executeUpdate();
+
+		} catch (Exception e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(ps);
+			DB.closeStatement(ps);
+		}
 	}
 
 	@Override
 	public void deleteById(Integer id) {
-		// TODO Auto-generated method stub
+		PreparedStatement ps = null;
 
+		try {
+			ps = con.prepareStatement("DELETE FROM seller WHERE Id = ? ");
+
+			ps.setInt(1, id);
+
+			ps.executeUpdate();
+		} catch (Exception e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(ps);
+		}
 	}
 
 	@Override
