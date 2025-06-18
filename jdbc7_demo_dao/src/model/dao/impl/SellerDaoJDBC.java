@@ -64,7 +64,6 @@ public class SellerDaoJDBC implements SellerDao {
 	@Override
 	public void update(Seller obj) {
 		PreparedStatement ps = null;
-		ResultSet rs = null;
 
 		try {
 			ps = con.prepareStatement("UPDATE seller "
